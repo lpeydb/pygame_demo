@@ -24,7 +24,7 @@ WINNER_FONT = pygame.font.SysFont('comicsans', 100)
 FPS = 60
 VEL = 5
 BULLET_VEL = 7
-MAX_BULLETS = 10 # 最多发射多少颗子弹
+MAX_BULLETS = 5  # 最多发射多少颗子弹
 SPACESHIP_WIDTH, SPACESHIP_HEIGHT = 55, 40
 
 YELLOW_HIT = pygame.USEREVENT + 1
@@ -116,13 +116,19 @@ def handle_bullets(yellow_bullets, red_bullets, yellow, red):
         elif bullet.x < 0:
             red_bullets.remove(bullet)
 
+    for y_bullet in yellow_bullets:  # 判断子弹是否相撞，是的话删除子弹
+        for r_bullet in red_bullets:
+            if r_bullet.colliderect(y_bullet):
+                yellow_bullets.remove(y_bullet)
+                red_bullets.remove(r_bullet)
+
 
 def draw_winner(text):
     draw_text = WINNER_FONT.render(text, 1, WHITE)
     WIN.blit(draw_text, (WIDTH / 2 - draw_text.get_width() / 2,
                          HEIGHT / 2 - draw_text.get_height() / 2))
     pygame.display.update()
-    pygame.time.delay(5000)
+    pygame.time.delay(2000) # 几秒后重新开始游戏
 
 
 def main():
