@@ -2,7 +2,7 @@
 
 ![effect](effect.png)
 
-开始游戏：`python -u main.py`
+开始游戏：`python -u .\two_player_aircraft_battle\main.py`
 
 操作方法：黄色 （WASD）移动  （F）开火
 
