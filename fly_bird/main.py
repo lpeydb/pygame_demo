@@ -7,7 +7,7 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 
 FPS = 60
 BIRD_WIDTH, BIRD_HEIGHT = 55, 40
-PILLAR_WIDTH, PILLAR_HEIGHT = 50, 200
+PILLAR_WIDTH, PILLAR_HEIGHT = 50, 400
 FALL_VEL = 2
 FLY_VEL = 10
 PILLAR_VEL = 30
@@ -23,7 +23,6 @@ BACKGROUND = pygame.transform.scale(
     pygame.image.load(os.path.join('fly_bird/figures', 'background.png')), (WIDTH, HEIGHT))
 BIRD = pygame.transform.scale(
     pygame.image.load(os.path.join('fly_bird/figures', 'bird.png')), (BIRD_WIDTH, BIRD_HEIGHT))
-PILLAR = pygame.image.load(os.path.join('fly_bird/figures', 'pillar.png'))
 PILLAR = pygame.transform.scale(
     pygame.image.load(os.path.join('fly_bird/figures', 'pillar.png')), (PILLAR_WIDTH, PILLAR_HEIGHT))
 
@@ -61,8 +60,7 @@ def main():
                     pillar.x -= PILLAR_VEL
 
             if event.type == PILLAR_ADD:
-                pillar_len = random.randint(50,300)
-                pillar = pygame.Rect(pygame.transform.scale(PILLAR, (PILLAR_WIDTH, pillar_len)
+                up_pillar = random.randint(-300,-100)
 
                 down_pillar = up_pillar + + PILLAR_HEIGHT +BIRD_HEIGHT * 2
                 pillar = pygame.Rect(WIDTH - PILLAR_WIDTH, up_pillar, PILLAR_WIDTH, up_pillar)
