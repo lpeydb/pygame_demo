@@ -24,7 +24,7 @@ WINNER_FONT = pygame.font.SysFont('comicsans', 100)
 FPS = 60
 VEL = 5
 BULLET_VEL = 7
-MAX_BULLETS = 5  # 最多发射多少颗子弹
+MAX_BULLETS = 10  # 最多发射多少颗子弹
 SPACESHIP_WIDTH, SPACESHIP_HEIGHT = 55, 40
 
 YELLOW_HIT = pygame.USEREVENT + 1
