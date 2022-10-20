@@ -11,7 +11,7 @@ pygame.display.set_caption("Bird Fly!")
 FPS = 60
 BIRD_WIDTH, BIRD_HEIGHT = 55, 40
 PILLAR_WIDTH, PILLAR_HEIGHT = 50, 400
-FALL_VEL = 1
+BIRD_FALL_VEL = 30
 FLY_VEL = 30
 PILLAR_VEL = 30
 WHITE = (255, 255, 255)
@@ -25,6 +25,9 @@ pygame.time.set_timer(PILLAR_MOVE, PILLAR_MOVE_TIME)
 PILLAR_ADD = pygame.USEREVENT + 2
 PILLAR_ADD_TIME = 3000
 pygame.time.set_timer(PILLAR_ADD, PILLAR_ADD_TIME)
+BIRD_FALL = pygame.USEREVENT + 3
+BIRD_FALL_TIME = 500
+pygame.time.set_timer(BIRD_FALL, BIRD_FALL_TIME)
 
 BACKGROUND = pygame.transform.scale(
     pygame.image.load(os.path.join('fly_bird/figures', 'background.png')), (WIDTH, HEIGHT))
@@ -83,7 +86,9 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
-
+            
+            if event.type == BIRD_FALL:
+                bird.y += BIRD_FALL_VEL
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE :
                     bird.y -= FLY_VEL
@@ -106,7 +111,6 @@ def main():
             if event.type == PILLAR_ADD:
                 add_random_pillar(pillars)
 
-        bird.y += FALL_VEL
         if bird.y + BIRD_HEIGHT > HEIGHT or bird.y < 0:
             bird_die = True
 
