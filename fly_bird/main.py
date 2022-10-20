@@ -87,7 +87,8 @@ def main():
                     if bird.colliderect(pillar):
                         bird_die = True
                         break
-
+                    
+                for pillar in pillars:
                     if pillar.x < 0:
                         pillars.remove(pillar)
 
