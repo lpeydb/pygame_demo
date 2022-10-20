@@ -11,8 +11,8 @@ pygame.display.set_caption("Bird Fly!")
 FPS = 60
 BIRD_WIDTH, BIRD_HEIGHT = 55, 40
 PILLAR_WIDTH, PILLAR_HEIGHT = 50, 400
-FALL_VEL = 2
-FLY_VEL = 10
+FALL_VEL = 1
+FLY_VEL = 30
 PILLAR_VEL = 30
 WHITE = (255, 255, 255)
 
@@ -42,12 +42,6 @@ def add_random_pillar(pillars):
     pillar = pygame.Rect(WIDTH - PILLAR_WIDTH,
                          down_pillar, PILLAR_WIDTH, PILLAR_HEIGHT)
     pillars.append(pillar)
-
-
-def bird_handle_movement(keys_pressed, bird):
-    if keys_pressed[pygame.K_SPACE]:  # FLY
-        bird.y -= FLY_VEL
-
 
 def draw_window(bird, pillars):
     WIN.blit(BACKGROUND, (0, 0))
@@ -82,6 +76,10 @@ def main():
                 run = False
                 pygame.quit()
 
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE :
+                    bird.y -= FLY_VEL
+
             if event.type == PILLAR_MOVE:
                 for pillar in pillars:
                     pillar.x -= PILLAR_VEL
@@ -95,9 +93,6 @@ def main():
 
             if event.type == PILLAR_ADD:
                 add_random_pillar(pillars)
-
-        keys_pressed = pygame.key.get_pressed()
-        bird_handle_movement(keys_pressed, bird)
 
         bird.y += FALL_VEL
         if bird.y + BIRD_HEIGHT > HEIGHT or bird.y < 0:
