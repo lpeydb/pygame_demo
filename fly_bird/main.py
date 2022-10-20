@@ -2,8 +2,11 @@ import pygame
 import os
 import random
 
+pygame.font.init()
+
 WIDTH, HEIGHT = 900, 500
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Bird Fly!")
 
 FPS = 60
 BIRD_WIDTH, BIRD_HEIGHT = 55, 40
@@ -11,6 +14,9 @@ PILLAR_WIDTH, PILLAR_HEIGHT = 50, 400
 FALL_VEL = 2
 FLY_VEL = 10
 PILLAR_VEL = 30
+WHITE = (255, 255, 255)
+
+FAIL_FONT = pygame.font.SysFont('comicsans', 100)
 
 PILLAR_MOVE = pygame.USEREVENT + 1
 PILLAR_MOVE_TIME = 500
@@ -25,6 +31,17 @@ BIRD = pygame.transform.scale(
     pygame.image.load(os.path.join('fly_bird/figures', 'bird.png')), (BIRD_WIDTH, BIRD_HEIGHT))
 PILLAR = pygame.transform.scale(
     pygame.image.load(os.path.join('fly_bird/figures', 'pillar.png')), (PILLAR_WIDTH, PILLAR_HEIGHT))
+
+
+def add_random_pillar(pillars):
+    up_pillar = random.randint(-300, -100)
+    down_pillar = up_pillar + PILLAR_HEIGHT + BIRD_HEIGHT * 3
+    pillar = pygame.Rect(WIDTH - PILLAR_WIDTH,
+                         up_pillar, PILLAR_WIDTH, PILLAR_HEIGHT)
+    pillars.append(pillar)
+    pillar = pygame.Rect(WIDTH - PILLAR_WIDTH,
+                         down_pillar, PILLAR_WIDTH, PILLAR_HEIGHT)
+    pillars.append(pillar)
 
 
 def bird_handle_movement(keys_pressed, bird):
@@ -42,9 +59,19 @@ def draw_window(bird, pillars):
     pygame.display.update()
 
 
+def draw_game_fail():
+    fail_text = "Game Failed"
+    draw_text = FAIL_FONT.render(fail_text, 1, WHITE)
+    WIN.blit(draw_text, (WIDTH / 2 - draw_text.get_width() / 2,
+                         HEIGHT / 2 - draw_text.get_height() / 2))
+    pygame.display.update()
+    pygame.time.delay(2000)  # 几秒后重新开始游戏
+
+
 def main():
     bird = pygame.Rect(50, HEIGHT//2, BIRD_WIDTH, BIRD_HEIGHT)
     pillars = []
+    bird_die = False
 
     clock = pygame.time.Clock()
     run = True
@@ -59,21 +86,30 @@ def main():
                 for pillar in pillars:
                     pillar.x -= PILLAR_VEL
 
-            if event.type == PILLAR_ADD:
-                up_pillar = random.randint(-300,-100)
+                    if bird.colliderect(pillar):
+                        bird_die = True
+                        break
 
-                down_pillar = up_pillar + + PILLAR_HEIGHT +BIRD_HEIGHT * 2
-                pillar = pygame.Rect(WIDTH - PILLAR_WIDTH, up_pillar, PILLAR_WIDTH, up_pillar)
-                pillars.append(pillar)
-                pillar = pygame.Rect(WIDTH - PILLAR_WIDTH, down_pillar, PILLAR_WIDTH, HEIGHT)
-                pillars.append(pillar)
+                    if pillar.x < 0:
+                        pillars.remove(pillar)
+
+            if event.type == PILLAR_ADD:
+                add_random_pillar(pillars)
 
         keys_pressed = pygame.key.get_pressed()
         bird_handle_movement(keys_pressed, bird)
 
         bird.y += FALL_VEL
+        if bird.y + BIRD_HEIGHT > HEIGHT or bird.y < 0:
+            bird_die = True
+
+        if bird_die:
+            draw_game_fail()
+            break
 
         draw_window(bird, pillars)
+
+    main()
 
 
 if __name__ == "__main__":
