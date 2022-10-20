@@ -17,6 +17,7 @@ PILLAR_VEL = 30
 WHITE = (255, 255, 255)
 
 FAIL_FONT = pygame.font.SysFont('comicsans', 100)
+SCORE_FONT = pygame.font.SysFont('comicsans', 40)
 
 PILLAR_MOVE = pygame.USEREVENT + 1
 PILLAR_MOVE_TIME = 500
@@ -43,12 +44,18 @@ def add_random_pillar(pillars):
                          down_pillar, PILLAR_WIDTH, PILLAR_HEIGHT)
     pillars.append(pillar)
 
-def draw_window(bird, pillars):
+def draw_window(bird, pillars, score):
     WIN.blit(BACKGROUND, (0, 0))
 
-    WIN.blit(BIRD, (bird.x, bird.y))
     for pillar in pillars:
         WIN.blit(PILLAR, (pillar.x, pillar.y))
+
+    score_text = SCORE_FONT.render("Score: " + str(score), 1,
+                                            WHITE)
+    WIN.blit(score_text, (10, 10))
+
+    WIN.blit(BIRD, (bird.x, bird.y))
+
 
     pygame.display.update()
 
@@ -63,9 +70,10 @@ def draw_game_fail():
 
 
 def main():
-    bird = pygame.Rect(50, HEIGHT//2, BIRD_WIDTH, BIRD_HEIGHT)
+    bird = pygame.Rect(20, HEIGHT//2, BIRD_WIDTH, BIRD_HEIGHT)
     pillars = []
     bird_die = False
+    score = 0
 
     clock = pygame.time.Clock()
     run = True
@@ -87,10 +95,13 @@ def main():
                     if bird.colliderect(pillar):
                         bird_die = True
                         break
-                    
+                        
+
                 for pillar in pillars:
                     if pillar.x < 0:
+                        score += 0.5
                         pillars.remove(pillar)
+                        
 
             if event.type == PILLAR_ADD:
                 add_random_pillar(pillars)
@@ -103,7 +114,7 @@ def main():
             draw_game_fail()
             break
 
-        draw_window(bird, pillars)
+        draw_window(bird, pillars, int(score))
 
     main()
 
