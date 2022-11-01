@@ -25,14 +25,16 @@ pygame.time.set_timer(PILLAR_MOVE, PILLAR_MOVE_TIME)
 PILLAR_ADD = pygame.USEREVENT + 2
 PILLAR_ADD_TIME = 3000
 pygame.time.set_timer(PILLAR_ADD, PILLAR_ADD_TIME)
-BIRD_FALL = pygame.USEREVENT + 3
+BIRD_FALL_EVT = pygame.USEREVENT + 3
 BIRD_FALL_TIME = 500
-pygame.time.set_timer(BIRD_FALL, BIRD_FALL_TIME)
+pygame.time.set_timer(BIRD_FALL_EVT, BIRD_FALL_TIME)
 
 BACKGROUND = pygame.transform.scale(
     pygame.image.load(os.path.join('fly_bird/figures', 'background.png')), (WIDTH, HEIGHT))
 BIRD = pygame.transform.scale(
     pygame.image.load(os.path.join('fly_bird/figures', 'bird.png')), (BIRD_WIDTH, BIRD_HEIGHT))
+FALL_BIRD = pygame.transform.scale(
+    pygame.image.load(os.path.join('fly_bird/figures', 'fall_bird.png')), (BIRD_WIDTH, BIRD_HEIGHT))
 PILLAR = pygame.transform.scale(
     pygame.image.load(os.path.join('fly_bird/figures', 'pillar.png')), (PILLAR_WIDTH, PILLAR_HEIGHT))
 
@@ -47,7 +49,7 @@ def add_random_pillar(pillars):
                          down_pillar, PILLAR_WIDTH, PILLAR_HEIGHT)
     pillars.append(pillar)
 
-def draw_window(bird, pillars, score):
+def draw_window(bird, pillars, score, bird_state):
     WIN.blit(BACKGROUND, (0, 0))
 
     for pillar in pillars:
@@ -57,7 +59,11 @@ def draw_window(bird, pillars, score):
                                             WHITE)
     WIN.blit(score_text, (10, 10))
 
-    WIN.blit(BIRD, (bird.x, bird.y))
+    if (bird_state == 'fly') :
+        WIN.blit(BIRD, (bird.x, bird.y))
+    else :
+        WIN.blit(FALL_BIRD, (bird.x, bird.y))
+    
 
 
     pygame.display.update()
@@ -77,7 +83,8 @@ def main():
     pillars = []
     bird_die = False
     score = 0
-
+    bird_state = 'fly'
+    
     clock = pygame.time.Clock()
     run = True
     while run:
@@ -87,11 +94,14 @@ def main():
                 run = False
                 pygame.quit()
             
-            if event.type == BIRD_FALL:
+            if event.type == BIRD_FALL_EVT:
                 bird.y += BIRD_FALL_VEL
+                bird_state = 'fall'
+
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE :
                     bird.y -= FLY_VEL
+                    bird_state = 'fly'
 
             if event.type == PILLAR_MOVE:
                 for pillar in pillars:
@@ -118,7 +128,7 @@ def main():
             draw_game_fail()
             break
 
-        draw_window(bird, pillars, int(score))
+        draw_window(bird, pillars, int(score), bird_state)
 
     main()
 
